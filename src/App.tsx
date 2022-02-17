@@ -4,12 +4,9 @@ import Meme from "./components/Meme";
 
 function App() {
   return (
-    // TODO: change w/h to 550px when removing border
-    <div className="w-[554px] h-[554px] mt-10 mx-auto border-2 border-red-700 border-solid">
+    <div className="w-[550px] mt-10 mx-auto">
       <Header />
-      <main className=" mt-9 mx-9">
-        <Meme />
-      </main>
+      <Meme />
     </div>
   );
 }
