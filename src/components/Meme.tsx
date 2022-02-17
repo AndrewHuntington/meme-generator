@@ -8,6 +8,8 @@ export default function Meme() {
     randomImage: "http://i.imgflip.com/1bij.jpg",
   });
   const [allMemeImages, setAllMemeImages] = useState(memesData);
+  const [topText, setTopText] = useState("");
+  const [bottomText, setBottomText] = useState("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -21,17 +23,28 @@ export default function Meme() {
     }));
   };
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    name === "topText" ? setTopText(value) : setBottomText(value);
+  };
+
   return (
     <main className="mt-9 mx-9">
       <form>
         <input
           type="text"
           placeholder="Top text"
+          name="topText"
+          value={topText}
+          onChange={handleChange}
           className="border border-[#D5D4D8] rounded-md text-xs py-2.5 pl-2.5  w-[230px]"
         />
         <input
           type="text"
           placeholder="Bottom text"
+          name="bottomText"
+          value={bottomText}
+          onChange={handleChange}
           className="border border-[#D5D4D8] rounded-md text-xs py-2.5 pl-2.5  w-[230px] ml-4"
         />
         <br />
@@ -45,10 +58,10 @@ export default function Meme() {
       <div className="font-['impact'] text-4xl relative text-center text-white uppercase">
         <img className="mx-auto rounded" src={meme.randomImage} alt="meme" />
         <h2 className="absolute w-4/5 left-1/2 -translate-x-1/2 top-4 text-shadow">
-          One does not simply
+          {topText}
         </h2>
         <h2 className="absolute w-4/5 left-1/2 -translate-x-1/2 bottom-4 text-shadow">
-          Walk into Morder
+          {bottomText}
         </h2>
       </div>
     </main>
