@@ -1,5 +1,13 @@
-import React, { useState } from "react";
-import { memesData } from "../memesData";
+import React, { useState, useEffect } from "react";
+
+interface MemesData {
+  id: string;
+  name: string;
+  url: string;
+  width: number;
+  height: number;
+  box_count: number;
+}
 
 export default function Meme() {
   const [meme, setMeme] = useState({
@@ -7,16 +15,19 @@ export default function Meme() {
     bottomText: "",
     randomImage: "http://i.imgflip.com/1bij.jpg",
   });
-  const [allMemeImages, setAllMemeImages] = useState(memesData);
-  const [topText, setTopText] = useState("");
-  const [bottomText, setBottomText] = useState("");
+  const [allMemes, setAllMemes] = useState<MemesData[]>();
+
+  useEffect(() => {
+    fetch("https://api.imgflip.com/get_memes")
+      .then((response) => response.json())
+      .then((json) => setAllMemes(json.data.memes));
+  }, [meme.randomImage]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const memes = allMemeImages.data.memes;
-    const memesCount = memes.length;
+    const memesCount = allMemes!.length;
     const randomIndex = Math.floor(Math.random() * memesCount);
-    const { url } = memes[randomIndex];
+    const { url } = allMemes![randomIndex];
     setMeme((prevMeme) => ({
       ...prevMeme,
       randomImage: url,
@@ -25,7 +36,10 @@ export default function Meme() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    name === "topText" ? setTopText(value) : setBottomText(value);
+    setMeme((prevMeme) => ({
+      ...prevMeme,
+      [name]: value,
+    }));
   };
 
   return (
@@ -35,7 +49,7 @@ export default function Meme() {
           type="text"
           placeholder="Top text"
           name="topText"
-          value={topText}
+          value={meme.topText}
           onChange={handleChange}
           className="border border-[#D5D4D8] rounded-md text-xs py-2.5 pl-2.5  w-[230px]"
         />
@@ -43,7 +57,7 @@ export default function Meme() {
           type="text"
           placeholder="Bottom text"
           name="bottomText"
-          value={bottomText}
+          value={meme.bottomText}
           onChange={handleChange}
           className="border border-[#D5D4D8] rounded-md text-xs py-2.5 pl-2.5  w-[230px] ml-4"
         />
@@ -58,10 +72,10 @@ export default function Meme() {
       <div className="font-['impact'] text-4xl relative text-center text-white uppercase">
         <img className="mx-auto rounded" src={meme.randomImage} alt="meme" />
         <h2 className="absolute w-4/5 left-1/2 -translate-x-1/2 top-4 text-shadow">
-          {topText}
+          {meme.topText}
         </h2>
         <h2 className="absolute w-4/5 left-1/2 -translate-x-1/2 bottom-4 text-shadow">
-          {bottomText}
+          {meme.bottomText}
         </h2>
       </div>
     </main>
